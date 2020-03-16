@@ -21,3 +21,25 @@ CREATE TABLE daily_counts (
     FOREIGN KEY(ctid) REFERENCES count_types(ctid)
 );
 
+CREATE VIEW alldata AS
+	SELECT
+		dc.dcid,
+		ct.name,
+		l.sublocation,
+		l.country,
+		l.lat,
+		l.long,
+		dc.day,
+		dc.dcount
+	FROM
+		daily_counts dc JOIN
+		locations l ON dc.lid = l.lid JOIN
+		count_types ct ON dc.ctid = ct.ctid;
+
+CREATE VIEW newcounts AS
+	SELECT
+		dc.dcid,
+		dc.dcount - pdc.dcount AS newcount
+	FROM
+		daily_counts dc JOIN
+		daily_counts pdc ON dc.lid = pdc.lid AND dc.ctid =pdc.ctid AND dc.day =  date(pdc.day, "1 days")
