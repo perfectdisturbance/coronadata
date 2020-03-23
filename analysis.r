@@ -7,20 +7,19 @@ conn <- dbConnect(RSQLite::SQLite(), "./coronadata.db")
 country <- "US"
 
 lastzerodata <- dbGetQuery(conn, "
-SELECT
-    a.day,
+SELECT	
+    date(a.day, '-1 day'),
     SUM(a.dcount) AS dcount 
 FROM 
     alldata a
 WHERE
     a.country LIKE ? AND 
     a.name LIKE 'Confirmed' AND
-    dcount = 0
+	dcount <> 0
 GROUP BY 
     a.country, a.day
-ORDER BY a.day DESC
-LIMIT 1 ", params = c(country))
-print(lastzerodata)
+ORDER BY a.day
+LIMIT 1; ", params = c(country))
 lastzerocasedate <- lastzerodata[1,1]
 print(lastzerocasedate)
 
