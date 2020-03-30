@@ -6,7 +6,7 @@ import datetime
 #constants
 datadirectory = "data/csse_covid_19_data/csse_covid_19_time_series/"
 databasefile = "coronadata.db"
-datatypes = ['Confirmed', 'Deaths', 'Recovered']
+datatypes = ['confirmed', 'deaths', 'recovered']
 nondatecolumns = ['Province/State', 'Country/Region', 'Lat', 'Long']
 
 
@@ -22,7 +22,7 @@ for mytype in datatypes:
     curs.execute("INSERT INTO count_types (name) VALUES (?)", (mytype,))
     counttypeid = curs.lastrowid
     
-    datafile = datadirectory+"time_series_19-covid-"+mytype+".csv"
+    datafile = datadirectory+"time_series_covid19_"+mytype+"_global.csv"
     
     print("Opening:")
     print(datafile)

@@ -5,6 +5,7 @@ conn <- dbConnect(RSQLite::SQLite(), "./coronadata.db")
 
 #Parameters
 country <- "US"
+type <- "confirmed"
 
 lastzerodata <- dbGetQuery(conn, "
 SELECT	
@@ -14,12 +15,12 @@ FROM
     alldata a
 WHERE
     a.country LIKE ? AND 
-    a.name LIKE 'Confirmed' AND
+    a.name LIKE ? AND
 	dcount <> 0
 GROUP BY 
     a.country, a.day
 ORDER BY a.day
-LIMIT 1; ", params = c(country))
+LIMIT 1; ", params = c(country, type))
 lastzerocasedate <- lastzerodata[1,1]
 print(lastzerocasedate)
 
@@ -30,11 +31,11 @@ SELECT
 FROM 
     alldata a
 WHERE
-    a.name LIKE 'Confirmed' AND
+    a.name LIKE ? AND
     a.country LIKE ? AND 
     a.day >= date(?)
 GROUP BY 
-    a.country, a.day", params = c(country, lastzerocasedate))
+    a.country, a.day", params = c(type, country, lastzerocasedate))
 
 print(countrydata)
 countrymodel <- nls(confirmed_cases ~ SSlogis(days_since_outbreak, Asym, xmid, scal), countrydata)
